@@ -1,0 +1,12 @@
+Memo(Component, function)
+
+const shouldUpdate = (prevProps, nextProps) =>
+  prevProps.todo.id === nextProps.todo.id;
+
+
+const handleRemove = useCallback(id => {
+    dispatch({ type: "remove", id });
+  }, []);
+
+
+https://jaredpalmer.com/formik/
