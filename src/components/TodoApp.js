@@ -1,20 +1,22 @@
-import React, { useReducer } from "react";
-import { initialState, reducer } from "../reducers/todo.reducer";
+import React, { useState } from "react";
 import Todo from "./Todo";
 import AddTodo from "./AddTodo";
+import { useTodoApp } from "../hooks/useTodoApp";
 
 const TodoApp = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [foo, setFoo] = useState("TodoApp");
+  const { state, handleRemove, handleEdit, dispatch } = useTodoApp();
 
   return (
     <>
-      <AddTodo add={text => dispatch({ type: "add", text: text })} />
+      <h1 onClick={() => setFoo("Updated TodoApp")}>{foo}</h1>
+      <AddTodo add={text => dispatch({ type: "add", text })} />
       {state.todos.map(t => (
         <Todo
           key={t.id}
           todo={t}
-          remove={() => dispatch({ type: "remove", id: t.id })}
-          edit={text => dispatch({ type: "edit", id: t.id, text: text })}
+          remove={() => handleRemove}
+          edit={handleEdit}
         />
       ))}
     </>

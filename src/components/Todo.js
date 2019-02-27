@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-// import useWhyDidYouUpdate from "../hooks/useWhyDidYouUpdate";
+import useWhyDidYouUpdate from "../hooks/useWhyDidYouUpdate";
 
 const Todo = ({ todo, remove, edit }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -11,6 +11,8 @@ const Todo = ({ todo, remove, edit }) => {
       inputRef.current.focus();
     }
   }, [isEditing]);
+
+  useWhyDidYouUpdate("Todo", { todo, remove, edit });
 
   const handleKeyPress = e => {
     if (e.key === "Enter") {
@@ -24,7 +26,7 @@ const Todo = ({ todo, remove, edit }) => {
       {!isEditing ? (
         <>
           <span className="TodoText">{todo.text}</span>
-          <button className="RemoveTodo" onClick={remove}>
+          <button className="RemoveTodo" onClick={() => remove(todo.id)}>
             Remove
           </button>
           <button className="EditTodo" onClick={() => setIsEditing(true)}>
@@ -43,7 +45,7 @@ const Todo = ({ todo, remove, edit }) => {
           <button
             className="EditTodoSave"
             onClick={() => {
-              edit(text);
+              edit(todo.id, text);
               setIsEditing(false);
             }}
           >
@@ -62,4 +64,4 @@ const Todo = ({ todo, remove, edit }) => {
   );
 };
 
-export default Todo;
+export default React.memo(Todo);
