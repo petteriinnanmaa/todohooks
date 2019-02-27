@@ -7,9 +7,11 @@ export const initialState = {
 
 let idCounter = 0;
 
-const findIndex = (state, id) => state.todos.findIndex(t => t.id === id);
+const findIndex = (state, { id }) =>
+  id ? state.todos.findIndex(t => t.id === id) : null;
 
 export const reducer = (state, action) => {
+  const currentIndex = findIndex(state, action);
   switch (action.type) {
     case "add": {
       idCounter++;
@@ -18,25 +20,26 @@ export const reducer = (state, action) => {
         text: action.text
       };
       return {
+        ...state,
         todos: [...state.todos, newTodo]
       };
     }
     case "edit": {
-      const idx = state.todos.findIndex(t => t.id === action.id);
-      const todo = Object.assign({}, state.todos[idx]);
+      const todo = Object.assign({}, state.todos[currentIndex]);
       todo.text = action.text;
       const todos = Object.assign([], state.todos);
-      todos.splice(idx, 1, todo);
+      todos.splice(currentIndex, 1, todo);
       return {
-        todos: todos
+        ...state,
+        todos
       };
     }
     case "remove": {
-      const idx = state.todos.findIndex(t => t.id === action.id);
       const todos = Object.assign([], state.todos);
-      todos.splice(idx, 1);
+      todos.splice(currentIndex, 1);
       return {
-        todos: todos
+        ...state,
+        todos
       };
     }
     default:
@@ -67,6 +70,7 @@ export const reducer = (state, action) => {
 
 export const immerReducer = (state, action) =>
   produce(state, draft => {
+    const currentIndex = findIndex(state, action);
     switch (action.type) {
       case "add": {
         idCounter++;
@@ -77,13 +81,11 @@ export const immerReducer = (state, action) =>
         return draft;
       }
       case "edit": {
-        const idx = findIndex(draft, action.id);
-        draft.todos[idx].text = action.text;
+        draft.todos[currentIndex].text = action.text;
         return draft;
       }
       case "remove": {
-        const idx = findIndex(draft, action.id);
-        draft.todos.splice(idx, 1);
+        draft.todos.splice(currentIndex, 1);
         return draft;
       }
       default:
